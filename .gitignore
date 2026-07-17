@@ -1,0 +1,5 @@
+/target
+bindings/sle-py/target
+bindings/sle-py/.venv
+__pycache__/
+*.pyc

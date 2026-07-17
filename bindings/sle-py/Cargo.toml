@@ -1,0 +1,20 @@
+[workspace]
+
+[package]
+name = "sle-py"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "sle_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+sle-core = { path = "../../crates/sle-core" }
+sle-embeddings = { path = "../../crates/sle-embeddings" }
+sle-sync = { path = "../../crates/sle-sync" }
+sle-adapters-code = { path = "../../crates/sle-adapters-code" }
+sle-adapters-text = { path = "../../crates/sle-adapters-text" }
+anyhow = "1"
+serde_json = "1"
+pyo3 = { version = "0.23", features = ["extension-module"] }

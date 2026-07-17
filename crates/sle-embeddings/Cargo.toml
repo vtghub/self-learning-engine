@@ -1,0 +1,7 @@
+[package]
+name = "sle-embeddings"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sle-core = { path = "../sle-core" }

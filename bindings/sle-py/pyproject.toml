@@ -1,0 +1,12 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "sle-py"
+version = "0.1.0"
+description = "Python bindings for the Self-Learning Semantic Engine core"
+requires-python = ">=3.8"
+
+[tool.maturin]
+module-name = "sle_py"

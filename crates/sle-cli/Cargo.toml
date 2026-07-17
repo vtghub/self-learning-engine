@@ -1,0 +1,14 @@
+[package]
+name = "sle-cli"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sle-core = { path = "../sle-core" }
+sle-embeddings = { path = "../sle-embeddings" }
+sle-sync = { path = "../sle-sync" }
+sle-adapters-code = { path = "../sle-adapters-code" }
+sle-adapters-text = { path = "../sle-adapters-text" }
+anyhow.workspace = true
+serde_json.workspace = true
+clap = { version = "4", features = ["derive"] }

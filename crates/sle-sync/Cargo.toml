@@ -1,0 +1,11 @@
+[package]
+name = "sle-sync"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sle-core = { path = "../sle-core" }
+
+[dev-dependencies]
+proptest = "1"
+serde_json.workspace = true
