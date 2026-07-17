@@ -16,6 +16,7 @@ original requirement maps to what's implemented, and
 flows through the CLI and Python bindings. The original design brainstorm
 and rationale live in
 [docs/brainstorm-design-and-implement-enchanted-brooks.md](docs/brainstorm-design-and-implement-enchanted-brooks.md).
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## Architecture
 
