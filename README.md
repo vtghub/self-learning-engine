@@ -18,6 +18,12 @@ and rationale live in
 [docs/brainstorm-design-and-implement-enchanted-brooks.md](docs/brainstorm-design-and-implement-enchanted-brooks.md).
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
+[docs/demo-run.html](docs/demo-run.html) is a rendered snapshot of an
+`sle-cli demo ./sample-workspace` run — proximity links, the cross-tree/
+same-tree split, and the usage-feedback weight simulation — open it
+directly in a browser to see the engine's output without building it
+yourself.
+
 ## Architecture
 
 | Layer | Crate | Role |
