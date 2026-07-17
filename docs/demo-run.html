@@ -1,0 +1,528 @@
+<meta charset="utf-8">
+<title>SLE Demo Run &mdash; sample-workspace</title>
+<style>
+  :root {
+    --bg: #eef0ea;
+    --bg-raised: #ffffff;
+    --ink: #23281f;
+    --ink-soft: #5b6350;
+    --line: #d7dccd;
+    --accent: #35563f;
+    --accent-soft: #6f8a72;
+    --amber: #a8701f;
+    --amber-bg: #f3e3c8;
+    --rust: #9c4536;
+    --rust-bg: #f3ddd6;
+    --bar-track: #e2e5da;
+    --shadow: 0 1px 2px rgba(35, 40, 31, 0.06), 0 4px 16px rgba(35, 40, 31, 0.05);
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12150f;
+      --bg-raised: #1a1e15;
+      --ink: #e9e7db;
+      --ink-soft: #a3ab93;
+      --line: #2b3123;
+      --accent: #8fc19a;
+      --accent-soft: #6a9276;
+      --amber: #e3ab55;
+      --amber-bg: #3a2d15;
+      --rust: #e08972;
+      --rust-bg: #3a231d;
+      --bar-track: #232920;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12150f;
+    --bg-raised: #1a1e15;
+    --ink: #e9e7db;
+    --ink-soft: #a3ab93;
+    --line: #2b3123;
+    --accent: #8fc19a;
+    --accent-soft: #6a9276;
+    --amber: #e3ab55;
+    --amber-bg: #3a2d15;
+    --rust: #e08972;
+    --rust-bg: #3a231d;
+    --bar-track: #232920;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0ea;
+    --bg-raised: #ffffff;
+    --ink: #23281f;
+    --ink-soft: #5b6350;
+    --line: #d7dccd;
+    --accent: #35563f;
+    --accent-soft: #6f8a72;
+    --amber: #a8701f;
+    --amber-bg: #f3e3c8;
+    --rust: #9c4536;
+    --rust-bg: #f3ddd6;
+    --bar-track: #e2e5da;
+    --shadow: 0 1px 2px rgba(35, 40, 31, 0.06), 0 4px 16px rgba(35, 40, 31, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px 80px;
+  }
+  main {
+    width: 100%;
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  header.page {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 2.15rem;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: 0.001em;
+  }
+  .run-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .run-meta code {
+    font-family: var(--font-mono);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 0.82rem;
+    color: var(--ink);
+  }
+
+  section { display: flex; flex-direction: column; gap: 16px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.35rem;
+    margin: 0;
+  }
+  .section-note { font-size: 0.88rem; color: var(--ink-soft); max-width: 46ch; }
+
+  /* KPI strip */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .kpi {
+    background: var(--bg-raised);
+    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .kpi .value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .kpi .label {
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  .kpi.split .value { color: var(--amber); }
+  .kpi.split .value2 { color: var(--ink-soft); font-weight: 500; }
+
+  /* Callout */
+  .callout {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .callout .mark { font-family: var(--font-mono); color: var(--accent); font-weight: 600; flex-shrink: 0; }
+  .callout b { font-weight: 600; }
+
+  /* Filter bar */
+  .filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .segmented {
+    display: inline-flex;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .segmented button {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .segmented button.active {
+    background: var(--accent);
+    color: var(--bg-raised);
+  }
+  .filters .count {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Link rows */
+  .links-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-raised);
+  }
+  .link-row {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) 20px minmax(0, 1fr) 96px;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 0.86rem;
+  }
+  .link-row:first-child { border-top: none; }
+  .score-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: 0.82rem;
+  }
+  .node {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+  .node .label {
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .node .meta {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .link-arrow { color: var(--line); text-align: center; font-size: 1rem; }
+  .badge-cell { display: flex; justify-content: flex-end; }
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .badge.cross { background: var(--amber-bg); color: var(--amber); }
+  .badge.same { background: var(--bar-track); color: var(--ink-soft); }
+
+  .bar-track {
+    position: relative;
+    height: 4px;
+    background: var(--bar-track);
+    border-radius: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .bar-fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--accent-soft); }
+  .link-row.cross .bar-fill { background: var(--amber); }
+
+  /* Feedback simulation */
+  .feedback-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .feedback-edge {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .feedback-edge b { color: var(--ink); font-weight: 600; }
+  .steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 84px;
+  }
+  .step .weight {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.5rem;
+    font-weight: 600;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bar-track);
+    border: 2px solid var(--line);
+  }
+  .step.start .weight { border-color: var(--ink-soft); color: var(--ink); }
+  .step.up .weight { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg-raised)); }
+  .step.down .weight { border-color: var(--rust); color: var(--rust); background: var(--rust-bg); }
+  .step .caption { font-size: 0.7rem; color: var(--ink-soft); text-align: center; max-width: 110px; line-height: 1.3; }
+  .connector {
+    flex: 0 0 40px;
+    height: 2px;
+    background: var(--line);
+    position: relative;
+    margin: 0 4px;
+    align-self: center;
+    margin-bottom: 28px;
+  }
+  .connector::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    border: 4px solid transparent;
+    border-left-color: var(--line);
+  }
+
+  footer.page {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer.page code { font-family: var(--font-mono); }
+
+  @media (max-width: 620px) {
+    .link-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .link-arrow { display: none; }
+    .badge-cell { justify-content: flex-start; }
+  }
+</style>
+
+<main>
+  <header class="page">
+    <div class="eyebrow">sle-cli &middot; demo run</div>
+    <h1>Ingest, embed, connect, reinforce</h1>
+    <div class="run-meta">
+      <code>cargo run -p sle-cli -- demo ./sample-workspace</code>
+      <span>proximity threshold 0.50</span>
+      <span>5 files &middot; mixed Rust, Python, Markdown</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="kpis" id="kpis">
+      <div class="kpi"><div class="value">5</div><div class="label">files ingested</div></div>
+      <div class="kpi"><div class="value">33</div><div class="label">nodes built</div></div>
+      <div class="kpi"><div class="value">53</div><div class="label">structural edges</div></div>
+      <div class="kpi split"><div class="value">25</div><div class="label">proximity links found</div></div>
+      <div class="kpi"><div class="value">103</div><div class="label">final edges</div></div>
+    </div>
+    <div class="callout">
+      <span class="mark">&rarr;</span>
+      <span>Of the 25 proximity links, <b>10 cross tree boundaries</b> &mdash; including code&nbsp;&harr;&nbsp;code across languages (<code style="font-family:var(--font-mono)">verify_password</code> &harr; <code style="font-family:var(--font-mono)">check_credentials</code>) and code&nbsp;&harr;&nbsp;prose (<code style="font-family:var(--font-mono)">hash_password</code> &harr; &ldquo;Password&nbsp;Verification&rdquo;). <b>Zero</b> link <code style="font-family:var(--font-mono)">baking.md</code> or <code style="font-family:var(--font-mono)">math_utils.rs</code> to the authentication content &mdash; the scanner discriminates, it doesn't just cluster everything together.</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Proximity links</h2>
+      <div class="section-note">Cosine similarity over hashed embeddings of every content-bearing node, at threshold &ge; 0.50.</div>
+    </div>
+    <div class="filters">
+      <div class="segmented" id="filterButtons">
+        <button data-filter="all" class="active">All 25</button>
+        <button data-filter="cross">Cross-tree 10</button>
+        <button data-filter="same">Same-tree 15</button>
+      </div>
+      <span class="count" id="visibleCount"></span>
+    </div>
+    <div class="links-table" id="linksTable"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Usage-feedback simulation</h2>
+      <div class="section-note">report_event() reinforces or decays a real edge &mdash; no re-parsing involved.</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-edge">Calls edge in <b>auth.rs</b> &mdash; starting weight <b>1</b></div>
+      <div class="steps">
+        <div class="step start"><div class="weight">1</div><div class="caption">initial weight</div></div>
+        <div class="connector"></div>
+        <div class="step up"><div class="weight">6</div><div class="caption">SuggestionAccepted +3<br>TestPassed +2</div></div>
+        <div class="connector"></div>
+        <div class="step down"><div class="weight">3</div><div class="caption">a later SuggestionRejected &minus;3</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page">
+    <span>Self-Learning Semantic Engine &middot; sle-cli demo</span>
+    <span>final state: <code>33 nodes / 103 edges</code></span>
+  </footer>
+</main>
+
+<script>
+  const DATA = [
+    { a: "verify_password", af: "auth.rs", ak: "Function", b: "hash_password", bf: "auth.rs", bk: "Function", score: 0.76, cross: false },
+    { a: "verify_password", af: "auth.rs", ak: "Function", b: "lookup_stored_hash", bf: "auth.rs", bk: "Function", score: 0.53, cross: false },
+    { a: "verify_password", af: "auth.rs", ak: "Function", b: "authenticate_user", bf: "auth.rs", bk: "Function", score: 0.72, cross: false },
+    { a: "verify_password", af: "auth.rs", ak: "Function", b: "check_credentials", bf: "login.py", bk: "Function", score: 0.78, cross: true },
+    { a: "verify_password", af: "auth.rs", ak: "Function", b: "hash_password", bf: "login.py", bk: "Function", score: 0.68, cross: true },
+    { a: "hash_password", af: "auth.rs", ak: "Function", b: "authenticate_user", bf: "auth.rs", bk: "Function", score: 0.62, cross: false },
+    { a: "hash_password", af: "auth.rs", ak: "Function", b: "Password Verification", bf: "design.md", bk: "Section", score: 0.55, cross: true },
+    { a: "hash_password", af: "auth.rs", ak: "Function", b: "check_credentials", bf: "login.py", bk: "Function", score: 0.58, cross: true },
+    { a: "hash_password", af: "auth.rs", ak: "Function", b: "hash_password", bf: "login.py", bk: "Function", score: 0.79, cross: true },
+    { a: "lookup_stored_hash", af: "auth.rs", ak: "Function", b: "issue_token", bf: "auth.rs", bk: "Function", score: 0.59, cross: false },
+    { a: "lookup_stored_hash", af: "auth.rs", ak: "Function", b: "lookup_stored_hash", bf: "login.py", bk: "Function", score: 0.75, cross: true },
+    { a: "issue_token", af: "auth.rs", ak: "Function", b: "authenticate_user", bf: "auth.rs", bk: "Function", score: 0.64, cross: false },
+    { a: "issue_token", af: "auth.rs", ak: "Function", b: "create_session_token", bf: "login.py", bk: "Function", score: 0.58, cross: true },
+    { a: "authenticate_user", af: "auth.rs", ak: "Function", b: "login", bf: "login.py", bk: "Function", score: 0.54, cross: true },
+    { a: "authenticate_user", af: "auth.rs", ak: "Function", b: "check_credentials", bf: "login.py", bk: "Function", score: 0.53, cross: true },
+    { a: "Baking Notes", af: "baking.md", ak: "Section", b: "Some notes on baking bread at home.", bf: "baking.md", bk: "Paragraph", score: 0.53, cross: false },
+    { a: "Password Verification", af: "design.md", ak: "Section", b: "hash_password", bf: "login.py", bk: "Function", score: 0.59, cross: true },
+    { a: "When a user submits a username and password, the\u2026", af: "design.md", ak: "Paragraph", b: "Once the password is verified, the system issues\u2026", bf: "design.md", bk: "Paragraph", score: 0.52, cross: false },
+    { a: "When a user submits a username and password, the\u2026", af: "design.md", ak: "Paragraph", b: "The login flow ties the two steps together: veri\u2026", bf: "design.md", bk: "Paragraph", score: 0.51, cross: false },
+    { a: "Once the password is verified, the system issues\u2026", af: "design.md", ak: "Paragraph", b: "The login flow ties the two steps together: veri\u2026", bf: "design.md", bk: "Paragraph", score: 0.66, cross: false },
+    { a: "login", af: "login.py", ak: "Function", b: "check_credentials", bf: "login.py", bk: "Function", score: 0.67, cross: false },
+    { a: "login", af: "login.py", ak: "Function", b: "create_session_token", bf: "login.py", bk: "Function", score: 0.76, cross: false },
+    { a: "check_credentials", af: "login.py", ak: "Function", b: "hash_password", bf: "login.py", bk: "Function", score: 0.74, cross: false },
+    { a: "check_credentials", af: "login.py", ak: "Function", b: "lookup_stored_hash", bf: "login.py", bk: "Function", score: 0.62, cross: false },
+    { a: "factorial", af: "math_utils.rs", ak: "Function", b: "fibonacci", bf: "math_utils.rs", bk: "Function", score: 0.74, cross: false },
+  ];
+
+  const table = document.getElementById("linksTable");
+  const visibleCount = document.getElementById("visibleCount");
+  let currentFilter = "all";
+
+  function render() {
+    const rows = DATA
+      .filter((d) => currentFilter === "all" || (currentFilter === "cross") === d.cross)
+      .slice()
+      .sort((x, y) => y.score - x.score);
+
+    table.innerHTML = rows
+      .map(
+        (d) => `
+      <div class="link-row ${d.cross ? "cross" : "same"}">
+        <div>
+          <div class="score-num">${d.score.toFixed(2)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${d.score * 100}%"></div></div>
+        </div>
+        <div class="node">
+          <div class="label">${escapeHtml(d.a)}</div>
+          <div class="meta">${d.af} \u00b7 ${d.ak}</div>
+        </div>
+        <div class="link-arrow">\u2194</div>
+        <div class="node">
+          <div class="label">${escapeHtml(d.b)}</div>
+          <div class="meta">${d.bf} \u00b7 ${d.bk}</div>
+        </div>
+        <div class="badge-cell"><span class="badge ${d.cross ? "cross" : "same"}">${d.cross ? "cross-tree" : "same-tree"}</span></div>
+      </div>`
+      )
+      .join("");
+
+    visibleCount.textContent = `${rows.length} shown`;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  document.getElementById("filterButtons").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    currentFilter = btn.dataset.filter;
+    [...document.querySelectorAll("#filterButtons button")].forEach((b) => b.classList.toggle("active", b === btn));
+    render();
+  });
+
+  render();
+</script>
